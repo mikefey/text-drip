@@ -16,7 +16,7 @@ export function tweenObject(object, properties, time, callback, easing) {
   let twn = new TWEEN.Tween(object).to(properties, time);
 
   if (!easing) {
-    easingOb = TWEEN.Easing.Exponential.Out;
+    easingOb = TWEEN.Easing.Quadratic.Out;
 
     twn.easing(easingOb);
   }
