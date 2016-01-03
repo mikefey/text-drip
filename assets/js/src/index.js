@@ -14,7 +14,7 @@ const app = {
     this.canvas = document.getElementsByClassName('font-render')[0];
     this.ctx = this.canvas.getContext('2d');
     this.scaleCanvas();
-    this.pointObjects = [];
+    this.dripPointObjects = [];
 
     Opentype.load('assets/fonts/2DF33B_3_0.ttf', function fontLoaded(err, font) {
       if (err) {
@@ -32,6 +32,53 @@ const app = {
   renderText(parsedFont) {
     const fontPath = parsedFont.getPath('Hello, World!', 100, 100, 100);
 
+    for (let i = 0; i < fontPath.commands.length; i++) {
+      const randDistort = _.random(0, 1);
+
+      if (randDistort) {
+        const distortAmount = 0.7;
+        const randPosition = _.random(1, 8);
+
+        if (randPosition === 1) {
+          fontPath.commands[i].x -= distortAmount;
+        }
+
+        if (randPosition === 2) {
+          fontPath.commands[i].x += distortAmount;
+        }
+
+        if (randPosition === 3) {
+          fontPath.commands[i].y -= distortAmount;
+        }
+
+        if (randPosition === 4) {
+          fontPath.commands[i].y += distortAmount;
+        }
+
+        if (randPosition === 5) {
+          fontPath.commands[i].x += distortAmount;
+          fontPath.commands[i].y += distortAmount;
+        }
+
+        if (randPosition === 6) {
+          fontPath.commands[i].x -= distortAmount;
+          fontPath.commands[i].y -= distortAmount;
+        }
+
+        if (randPosition === 7) {
+          fontPath.commands[i].x += distortAmount;
+          fontPath.commands[i].y -= distortAmount;
+        }
+
+        if (randPosition === 8) {
+          fontPath.commands[i].x -= distortAmount;
+          fontPath.commands[i].y += distortAmount;
+        }
+      }
+    }
+
+
+    this.ctx.filter = 'blur(100px)';
     fontPath.draw(this.ctx);
 
     this.makeDrips(fontPath);
@@ -39,7 +86,7 @@ const app = {
 
 
   makeDrips(fontPath) {
-    const dripPoints = _.sample(fontPath.commands, 8);
+    const dripPoints = _.sample(fontPath.commands, _.random(7, 12));
 
     for (let i = 0; i < dripPoints.length; i++) {
       const dripAmount = 100 + Math.random() * 300;
@@ -53,9 +100,7 @@ const app = {
         x: dripPoints[i].x,
         y: dripPoints[i].y,
       };
-      this.pointObjects.push(pointOb);
-
-      //
+      this.dripPointObjects.push(pointOb);
 
       tweenObject(
         pointOb,
@@ -67,6 +112,7 @@ const app = {
         this.onDripUpdate.bind(this));
     }
   },
+
 
   onDripUpdate(pointOb) {
     this.ctx.beginPath();
