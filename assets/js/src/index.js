@@ -24,8 +24,22 @@ const app = {
    * @returns {undefined} undefined
    */
   renderText() {
-    const text = canvasTextEffects.renderText(this.ctx, 'Hello World', 100, 100, 100, 0.7);
-    dripEffect.drip(this.ctx, text, 7, 12);
+    const _this = this;
+    const textPath = canvasTextEffects.getPath('Hello World', 100, 100, 100, 0.5);
+    const inkFillTexture = new Image();
+
+    inkFillTexture.src = 'assets/image/ink-texture.jpg';
+
+    inkFillTexture.onload = function onTextureLoad() {
+      const pattern = _this.ctx.createPattern(this, 'repeat');
+
+      _this.ctx.fillStyle = pattern;
+      _this.ctx.strokeStyle = pattern;
+
+      textPath.fill = pattern;
+      canvasTextEffects.renderText(textPath, _this.ctx);
+      dripEffect.drip(_this.ctx, textPath, 7, 12);
+    };
   },
 
 

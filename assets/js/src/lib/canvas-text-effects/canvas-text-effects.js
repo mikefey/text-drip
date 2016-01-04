@@ -30,8 +30,7 @@ const canvasTextEffects = {
 
 
   /**
-   * Renders a string to the canvas
-   * @param {Object} context - A canvas 2d context
+   * Gets a an Opentype font path object
    * @param {Number} x - The left position to start rendering the text at
    * @param {Number} y - The top position to start rendering the text at
    * @param {Number} fontSize - The fontSize to render the text at
@@ -39,8 +38,8 @@ const canvasTextEffects = {
    * some of the text points by
    * @returns {Object} An object containing the parsed font's data
    */
-  renderText(context, text, x, y, fontSize, distortAmount) {
-    const fontPath = this.parsedFont.getPath(text, x, y, fontSize);
+  getPath(text, x, y, fontSize, distortAmount, kerning = true) {
+    const fontPath = this.parsedFont.getPath(text, x, y, fontSize, { kerning });
 
     if (distortAmount) {
       for (let i = 0; i < fontPath.commands.length; i++) {
@@ -88,9 +87,17 @@ const canvasTextEffects = {
       }
     }
 
-    fontPath.draw(context);
-
     return fontPath;
+  },
+
+
+  /**
+   * Renders text to the canvas
+   * @param {Object} path - An opentpe image path object
+   * @param {Object} context - A canvas 2d context
+   */
+  renderText(path, context) {
+    path.draw(context);
   },
 };
 

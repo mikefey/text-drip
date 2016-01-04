@@ -28,6 +28,8 @@ const drip = {
         x: dripPoints[i].x,
         y: dripPoints[i].y,
       };
+
+      // this.adjustPoint(pointOb, fontPath);
       this.dripPointObjects.push(pointOb);
 
       tweenObject(
@@ -41,6 +43,37 @@ const drip = {
     }
   },
 
+  adjustPoint(pointOb, fontPath) {
+    const offsetAmount = 5;
+
+    for (let i = 0; i < fontPath.commands.length; i++) {
+      if (fontPath.commands[i].x === pointOb.startX &&
+        fontPath.commands[i].y === pointOb.startY) {
+        if (i + 1 < fontPath.commands.length && i - 1 >= 0) {
+          if (fontPath.commands[i - 1].x <= pointOb.x &&
+            fontPath.commands[i - 1].y < pointOb.y &&
+            fontPath.commands[i + 1].x <= pointOb.x &&
+            fontPath.commands[i + 1].y >= pointOb.y) {
+            pointOb.x += offsetAmount;
+            pointOb.xOffset = offsetAmount;
+          }
+
+          if (fontPath.commands[i - 1].x >= pointOb.x &&
+            fontPath.commands[i - 1].y < pointOb.y &&
+            fontPath.commands[i + 1].x <= pointOb.x &&
+            fontPath.commands[i + 1].y >= pointOb.y) {
+            pointOb.x += offsetAmount;
+            pointOb.xOffset = offsetAmount;
+          }
+        } else if (i + 1 < fontPath.commands.length) {
+
+        } else if (i - 1 >= 0) {
+
+        }
+      }
+    }
+  },
+
 
   /**
    * Draws the drip at its current state throughout the animation
@@ -50,11 +83,12 @@ const drip = {
   onDripUpdate(pointOb) {
     this.ctx.beginPath();
     this.ctx.moveTo(pointOb.startX, pointOb.startY);
+    this.ctx.lineJoin = this.ctx.lineCap = 'round';
     this.ctx.lineWidth = pointOb.strokeWidth;
     this.ctx.lineTo(pointOb.x, pointOb.y);
     this.ctx.stroke();
-    this.ctx.arc(pointOb.x, pointOb.y + 2, pointOb.strokeWidth / 2, 0, 2 * Math.PI, true);
-    this.ctx.fill();
+    //this.ctx.arc(pointOb.x, pointOb.y + 5, pointOb.strokeWidth / 2, 0, 2 * Math.PI, true);
+    //this.ctx.fill();
     this.ctx.closePath();
   },
 };
