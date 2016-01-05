@@ -17,9 +17,9 @@ const drip = {
     this.dripPointObjects = [];
 
     for (let i = 0; i < dripPoints.length; i++) {
-      const dripAmount = 100 + (Math.random() * 300);
-      const dripTime = 8000 + (Math.random() * 10000);
       const strokeWidth = _.random(2, 5);
+      const dripAmount = (strokeWidth * 50) + (Math.random() * 300);
+      const dripTime = 5000 + (strokeWidth * 1000);
       const pointOb = {
         strokeWidth,
         index: i,
@@ -29,7 +29,7 @@ const drip = {
         y: dripPoints[i].y,
       };
 
-      // this.adjustPoint(pointOb, fontPath);
+      this.drawRandomShape(pointOb.startX, pointOb.startY, strokeWidth / 1.5);
       this.dripPointObjects.push(pointOb);
 
       tweenObject(
@@ -43,35 +43,38 @@ const drip = {
     }
   },
 
-  adjustPoint(pointOb, fontPath) {
-    const offsetAmount = 5;
 
-    for (let i = 0; i < fontPath.commands.length; i++) {
-      if (fontPath.commands[i].x === pointOb.startX &&
-        fontPath.commands[i].y === pointOb.startY) {
-        if (i + 1 < fontPath.commands.length && i - 1 >= 0) {
-          if (fontPath.commands[i - 1].x <= pointOb.x &&
-            fontPath.commands[i - 1].y < pointOb.y &&
-            fontPath.commands[i + 1].x <= pointOb.x &&
-            fontPath.commands[i + 1].y >= pointOb.y) {
-            pointOb.x += offsetAmount;
-            pointOb.xOffset = offsetAmount;
-          }
+  /**
+   * Creates a random 'blob' shape that the drip can start from
+   * @param {Number} startX - The x position  for the center of the shape
+   * @param {Number} startY - The y position  for the center of the shape
+   * @param {Number} radius - The radius of the shape
+   * @returns {undefined} undefined
+   */
+  drawRandomShape(startX, startY, radius) {
+    const _this = this;
+    const numPoints = _.sample([5, 7]);
+    const points = [];
 
-          if (fontPath.commands[i - 1].x >= pointOb.x &&
-            fontPath.commands[i - 1].y < pointOb.y &&
-            fontPath.commands[i + 1].x <= pointOb.x &&
-            fontPath.commands[i + 1].y >= pointOb.y) {
-            pointOb.x += offsetAmount;
-            pointOb.xOffset = offsetAmount;
-          }
-        } else if (i + 1 < fontPath.commands.length) {
+    this.ctx.beginPath();
+    this.ctx.moveTo(startX, startY);
 
-        } else if (i - 1 >= 0) {
+    for (let i = 0; i < numPoints + 1; i++) {
+      const offset = _.random(-(radius / 3), (radius / 3));
+      const x = (startX + radius * Math.cos(2 * Math.PI * i / numPoints)) + offset;
+      const y = (startY + radius * Math.sin(2 * Math.PI * i / numPoints)) + offset;
 
-        }
+      points.push([x, y]);
+
+      if (i === 0) {
+        _this.ctx.moveTo(x, y);
+      } else {
+        _this.ctx.arcTo(points[i - 1][0], points[i - 1][1], x, y, radius / 2);
       }
     }
+
+    this.ctx.closePath();
+    this.ctx.fill();
   },
 
 
