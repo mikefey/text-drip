@@ -35,10 +35,13 @@ const app = {
 
       _this.ctx.fillStyle = pattern;
       _this.ctx.strokeStyle = pattern;
-
-      textPath.fill = pattern;
+      _this.ctx.beginPath();
       canvasTextEffects.renderText(textPath, _this.ctx);
-      dripEffect.drip(_this.ctx, textPath, 7, 12);
+      dripEffect.setupDrips(_this.ctx, textPath, 7, 12);
+      _this.ctx.closePath();
+      _this.ctx.fill();
+
+      dripEffect.drip();
     };
   },
 

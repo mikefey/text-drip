@@ -1,16 +1,20 @@
 import _ from 'lodash';
 import { tweenObject } from './../../../helpers/tween';
 
+
+/**
+* Creates a 'dripping ink' effect from a set of given points
+*/
 const drip = {
   /**
-   * Creates a 'dripping ink' effect from a set of given points
+   * Sets up the points to drip from
    * @param {Object} context - A canvas 2d context
    * @param {Object} fontPath - An object containing font data from Opentype.js
    * @param {Number} minDrips - The minimum amount of drips to show
    * @param {Number} maxDrips - The maximum amount of drips to show
    * @returns {undefined} undefined
    */
-  drip(context, fontPath, minDrips = 2, maxDrips = 10) {
+  setupDrips(context, fontPath, minDrips = 2, maxDrips = 10) {
     const dripPoints = _.sample(fontPath.commands, _.random(minDrips, maxDrips));
 
     this.ctx = context;
@@ -18,10 +22,15 @@ const drip = {
 
     for (let i = 0; i < dripPoints.length; i++) {
       const strokeWidth = _.random(2, 5);
-      const dripAmount = (strokeWidth * 50) + (Math.random() * 300);
+      let dripAmount = (strokeWidth * 50) + (Math.random() * 300);
+      if (dripPoints[i].y + dripAmount > this.ctx.canvas.height - 50) {
+        dripAmount = (this.ctx.canvas.height - 50) - dripPoints[i].y;
+      }
       const dripTime = 5000 + (strokeWidth * 1000);
       const pointOb = {
         strokeWidth,
+        dripAmount,
+        dripTime,
         index: i,
         startX: dripPoints[i].x,
         startY: dripPoints[i].y,
@@ -29,52 +38,67 @@ const drip = {
         y: dripPoints[i].y,
       };
 
-      this.drawRandomShape(pointOb.startX, pointOb.startY, strokeWidth / 1.5);
+      this.adjustPoint(pointOb);
       this.dripPointObjects.push(pointOb);
-
-      tweenObject(
-        pointOb,
-        {
-          y: pointOb.y + dripAmount,
-          strokeWidth: pointOb.strokeWidth * 0.3,
-        },
-        dripTime,
-        this.onDripUpdate.bind(this));
     }
   },
 
 
   /**
-   * Creates a random 'blob' shape that the drip can start from
-   * @param {Number} startX - The x position  for the center of the shape
-   * @param {Number} startY - The y position  for the center of the shape
-   * @param {Number} radius - The radius of the shape
+   * Adjusts the starting points of the drips so they are more 'inside' of the
+   * letters. If they are exactly placed along the outline they don't look
+   * as natural.
+   * @param {Object} pointOb - A drip point object
    * @returns {undefined} undefined
    */
-  drawRandomShape(startX, startY, radius) {
-    const _this = this;
-    const numPoints = _.sample([5, 7]);
-    const points = [];
+  adjustPoint(pointOb) {
+    const offset = pointOb.strokeWidth + 5;
 
-    this.ctx.beginPath();
-    this.ctx.moveTo(startX, startY);
-
-    for (let i = 0; i < numPoints + 1; i++) {
-      const offset = _.random(-(radius / 3), (radius / 3));
-      const x = (startX + radius * Math.cos(2 * Math.PI * i / numPoints)) + offset;
-      const y = (startY + radius * Math.sin(2 * Math.PI * i / numPoints)) + offset;
-
-      points.push([x, y]);
-
-      if (i === 0) {
-        _this.ctx.moveTo(x, y);
-      } else {
-        _this.ctx.arcTo(points[i - 1][0], points[i - 1][1], x, y, radius / 2);
-      }
+    if (this.ctx.isPointInPath((pointOb.x + offset) * 2,
+      (pointOb.y + offset) * 2)) {
+      pointOb.x += offset;
+      pointOb.y += offset;
+      pointOb.xOffset = offset;
+      pointOb.yOffset = offset;
+    } else if (this.ctx.isPointInPath((pointOb.x + offset) * 2,
+      (pointOb.y - offset) * 2)) {
+      pointOb.x += offset;
+      pointOb.y -= offset;
+      pointOb.xOffset = offset;
+      pointOb.yOffset = -offset;
+    } else if (this.ctx.isPointInPath((pointOb.x - offset) * 2,
+      (pointOb.y - offset) * 2)) {
+      pointOb.x -= offset;
+      pointOb.y -= offset;
+      pointOb.xOffset = -offset;
+      pointOb.yOffset = -offset;
+    } else if (this.ctx.isPointInPath((pointOb.x - offset) * 2,
+      (pointOb.y + offset) * 2)) {
+      pointOb.x -= offset;
+      pointOb.y += offset;
+      pointOb.xOffset = -offset;
+      pointOb.yOffset = offset;
     }
+  },
 
-    this.ctx.closePath();
-    this.ctx.fill();
+
+  /**
+   * Executes drip animation
+   * @returns {undefined} undefined
+   */
+  drip() {
+    for (let i = 0; i < this.dripPointObjects.length; i++) {
+      const pointOb = this.dripPointObjects[i];
+
+      tweenObject(
+        pointOb,
+        {
+          y: pointOb.y + pointOb.dripAmount,
+          strokeWidth: pointOb.strokeWidth * 0.3,
+        },
+        pointOb.dripTime,
+        this.onDripUpdate.bind(this));
+    }
   },
 
 
@@ -85,13 +109,12 @@ const drip = {
    */
   onDripUpdate(pointOb) {
     this.ctx.beginPath();
-    this.ctx.moveTo(pointOb.startX, pointOb.startY);
+    this.ctx.moveTo(pointOb.startX + pointOb.xOffset,
+      pointOb.startY + pointOb.yOffset);
     this.ctx.lineJoin = this.ctx.lineCap = 'round';
     this.ctx.lineWidth = pointOb.strokeWidth;
     this.ctx.lineTo(pointOb.x, pointOb.y);
     this.ctx.stroke();
-    //this.ctx.arc(pointOb.x, pointOb.y + 5, pointOb.strokeWidth / 2, 0, 2 * Math.PI, true);
-    //this.ctx.fill();
     this.ctx.closePath();
   },
 };

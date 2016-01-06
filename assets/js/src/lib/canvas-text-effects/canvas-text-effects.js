@@ -92,12 +92,43 @@ const canvasTextEffects = {
 
 
   /**
-   * Renders text to the canvas
+   * Adds the text path to the a 2D context object. Does not begin or end path,
+   * simply adds the commands to the context state.
    * @param {Object} path - An opentpe image path object
    * @param {Object} context - A canvas 2d context
    */
   renderText(path, context) {
-    path.draw(context);
+    context.beginPath();
+
+    for (let i = 0; i < path.commands.length; i++) {
+      const command = path.commands[i];
+
+      if (command.type === 'M') {
+        context.moveTo(command.x, command.y);
+      }
+
+      if (path.commands[i].type === 'L') {
+        context.lineTo(command.x, command.y);
+      }
+
+      if (path.commands[i].type === 'C') {
+        context.bezierCurveTo(command.x1,
+          command.y1,
+          command.x2,
+          command.y2,
+          command.x,
+          command.y);
+      }
+
+      if (path.commands[i].type === 'Q') {
+        context.quadraticCurveTo(command.x1,
+          command.y1,
+          command.x2,
+          command.y2,
+          command.x,
+          command.y);
+      }
+    }
   },
 };
 
