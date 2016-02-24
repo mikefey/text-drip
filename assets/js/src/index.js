@@ -1,5 +1,5 @@
-import canvasTextEffects from './lib/canvas-text-effects/canvas-text-effects';
-import dripEffect from './lib/canvas-text-effects/effects/drip';
+import canvasTextEffects from './lib/text-effects/text-effects';
+import dripEffect from './lib/text-effects/effects/drip';
 import './../../css/src/app.scss!';
 
 
@@ -11,38 +11,82 @@ const app = {
   init() {
     window.addEventListener('resize', this.scaleCanvas.bind(this));
 
+    this.htmlEl = document.getElementsByTagName('html')[0];
+    this.input = document.getElementsByClassName('text-input')[0];
     this.canvas = document.getElementsByClassName('font-render')[0];
     this.ctx = this.canvas.getContext('2d');
     this.scaleCanvas();
 
-    canvasTextEffects.setup('assets/fonts/2DF33B_3_0.ttf', this.renderText.bind(this));
+    this.input.addEventListener('keyup', this.onInputKeyup.bind(this));
+    canvasTextEffects.setup('assets/fonts/2DF33B_3_0.ttf', this.onFontLoaded.bind(this));
+  },
+
+
+  /**
+   * Callback for when the font is loaded
+   * @returns {undefined} undefined
+   */
+  onFontLoaded() {
+    this.loadInkTexture();
+  },
+
+
+  /**
+   * Callback for when the ink texture is loaded
+   * @returns {undefined} undefined
+   */
+  loadInkTexture() {
+    const _this = this;
+    const inkFillTexture = new Image();
+
+    inkFillTexture.src = 'assets/image/ink-texture.jpg';
+    inkFillTexture.onload = function onTextureLoaded() {
+      _this.textureImage = this;
+      _this.onAllAssetsLoaded();
+    };
+  },
+
+
+  /**
+   * Callback for when all assets are loaded
+   * @returns {undefined} undefined
+   */
+  onAllAssetsLoaded() {
+    this.htmlEl.className += ' loaded';
+  },
+
+
+  /**
+   * Keyup handler for text input
+   * @param {Object} e - A keyup event
+   * @returns {undefined} undefined
+   */
+  onInputKeyup(e) {
+    if (e.keyCode === 13) {
+      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+      this.renderDripText(this.input.value);
+    }
   },
 
 
   /**
    * Renders the text to the canvas
+   * @param {String} text - The text to render
    * @returns {undefined} undefined
    */
-  renderText() {
-    const _this = this;
-    const textPath = canvasTextEffects.getPath('Hello World', 100, 100, 100, 0.5);
-    const inkFillTexture = new Image();
+  renderDripText(text) {
+    const textPath = canvasTextEffects.getPath(text, 20, 150, 75, 0.5);
+    const pattern = this.ctx.createPattern(this.textureImage, 'repeat');
 
-    inkFillTexture.src = 'assets/image/ink-texture.jpg';
+    this.ctx.fillStyle = pattern;
+    this.ctx.strokeStyle = pattern;
+    this.ctx.beginPath();
+    canvasTextEffects.renderText(textPath, this.ctx);
+    dripEffect.setupDrips(this.ctx, textPath, 7, 12);
+    this.ctx.closePath();
+    this.ctx.fill();
 
-    inkFillTexture.onload = function onTextureLoad() {
-      const pattern = _this.ctx.createPattern(this, 'repeat');
-
-      _this.ctx.fillStyle = pattern;
-      _this.ctx.strokeStyle = pattern;
-      _this.ctx.beginPath();
-      canvasTextEffects.renderText(textPath, _this.ctx);
-      dripEffect.setupDrips(_this.ctx, textPath, 7, 12);
-      _this.ctx.closePath();
-      _this.ctx.fill();
-
-      dripEffect.drip();
-    };
+    dripEffect.drip();
   },
 
 

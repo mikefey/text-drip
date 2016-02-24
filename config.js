@@ -19,15 +19,12 @@ System.config({
     "babel": "npm:babel-core@5.8.34",
     "babel-runtime": "npm:babel-runtime@5.8.34",
     "core-js": "npm:core-js@1.2.6",
-    "josephg/noisejs": "github:josephg/noisejs@master",
     "jsx": "github:floatdrop/plugin-jsx@1.1.0",
     "lodash": "npm:lodash@3.10.1",
     "opentype.js": "npm:opentype.js@0.6.0",
     "react": "npm:react@0.14.3",
     "react-dom": "npm:react-dom@0.14.3",
-    "scss": "github:theefer/plugin-sass@master",
-    "subprotocol/verlet-js": "github:subprotocol/verlet-js@master",
-    "toxiclibsjs": "npm:toxiclibsjs@0.3.1",
+    "scss": "github:mobilexag/plugin-sass@0.2.0",
     "tween.js": "npm:tween.js@16.3.1",
     "github:floatdrop/plugin-jsx@1.1.0": {
       "react-tools": "npm:react-tools@0.13.3"
@@ -67,6 +64,9 @@ System.config({
     "github:jspm/nodelibs-process@0.1.2": {
       "process": "npm:process@0.11.2"
     },
+    "github:jspm/nodelibs-querystring@0.1.0": {
+      "querystring": "npm:querystring@0.2.0"
+    },
     "github:jspm/nodelibs-stream@0.1.0": {
       "stream-browserify": "npm:stream-browserify@1.0.0"
     },
@@ -82,9 +82,13 @@ System.config({
     "github:jspm/nodelibs-vm@0.1.0": {
       "vm-browserify": "npm:vm-browserify@0.0.4"
     },
-    "github:theefer/plugin-sass@master": {
+    "github:mobilexag/plugin-sass@0.2.0": {
       "fs": "github:jspm/nodelibs-fs@0.1.2",
-      "sass.js": "npm:sass.js@0.9.4"
+      "lodash": "npm:lodash@3.10.1",
+      "querystring": "github:jspm/nodelibs-querystring@0.1.0",
+      "reqwest": "github:ded/reqwest@2.0.5",
+      "sass.js": "npm:sass.js@0.9.4",
+      "url": "github:jspm/nodelibs-url@0.1.0"
     },
     "npm:acorn@1.2.2": {
       "fs": "github:jspm/nodelibs-fs@0.1.2",
@@ -520,10 +524,6 @@ System.config({
     },
     "npm:tiny-inflate@1.0.2": {
       "buffer": "github:jspm/nodelibs-buffer@0.1.0"
-    },
-    "npm:toxiclibsjs@0.3.1": {
-      "buffer": "github:jspm/nodelibs-buffer@0.1.0",
-      "process": "github:jspm/nodelibs-process@0.1.2"
     },
     "npm:ua-parser-js@0.7.10": {
       "systemjs-json": "github:systemjs/plugin-json@0.1.0"

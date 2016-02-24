@@ -1,9 +1,4 @@
-html {
-  height: 100%;
-  width: 100%;
-}
-
-.app-container,
-.font-render {
-  position: absolute;
-}
+@import 'mixins';
+@import 'colors';
+@import 'preloader';
+@import 'layout';
