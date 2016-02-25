@@ -19,9 +19,11 @@ const drip = {
 
     this.ctx = context;
     this.dripPointObjects = [];
+    this.dripTweens = [];
 
     for (let i = 0; i < dripPoints.length; i++) {
-      const strokeWidth = _.random(2, 5);
+      const strokeWidth = window.innerWidth > 600 ?
+        _.random(2, 5) : _.random(1, 3);
       let dripAmount = (strokeWidth * 50) + (Math.random() * 300);
       if (dripPoints[i].y + dripAmount > this.ctx.canvas.height - 50) {
         dripAmount = (this.ctx.canvas.height - 50) - dripPoints[i].y;
@@ -89,8 +91,7 @@ const drip = {
   drip() {
     for (let i = 0; i < this.dripPointObjects.length; i++) {
       const pointOb = this.dripPointObjects[i];
-
-      tweenObject(
+      const dripTween = tweenObject(
         pointOb,
         {
           y: pointOb.y + pointOb.dripAmount,
@@ -98,6 +99,8 @@ const drip = {
         },
         pointOb.dripTime,
         this.onDripUpdate.bind(this));
+
+      this.dripTweens.push(dripTween);
     }
   },
 
@@ -116,6 +119,19 @@ const drip = {
     this.ctx.lineTo(pointOb.x, pointOb.y);
     this.ctx.stroke();
     this.ctx.closePath();
+  },
+
+
+  /**
+   * Stops the drip animation
+   * @returns {undefined} undefined
+   */
+  stopDrips() {
+    if (this.dripTweens) {
+      for (let i = 0; i < this.dripTweens.length; i++) {
+        this.dripTweens[i].stop();
+      }
+    }
   },
 };
 

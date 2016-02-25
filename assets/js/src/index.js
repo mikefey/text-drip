@@ -63,6 +63,7 @@ const app = {
    */
   onInputKeyup(e) {
     if (e.keyCode === 13) {
+      dripEffect.stopDrips();
       this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
       this.renderDripText(this.input.value);
     }
@@ -75,7 +76,8 @@ const app = {
    * @returns {undefined} undefined
    */
   renderDripText(text) {
-    const textPath = canvasTextEffects.getPath(text, 20, 150, 75, 0.5);
+    const fontSize = window.innerWidth > 600 ? 75 : 40;
+    const textPath = canvasTextEffects.getPath(text, 20, 150, fontSize, 0.5);
     const pattern = this.ctx.createPattern(this.textureImage, 'repeat');
 
     this.ctx.fillStyle = pattern;
@@ -96,6 +98,8 @@ const app = {
    * @returns {undefined} undefined
    */
   scaleCanvas() {
+    dripEffect.stopDrips();
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.canvas.width = (window.innerWidth * 2);
     this.canvas.height = (window.innerHeight * 2);
     this.canvas.style.width = window.innerWidth.toString() + 'px';

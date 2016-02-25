@@ -22,16 +22,21 @@ html {
 }
 
 .text-input {
+  border: 1px solid $grey;
   color: $black;
   display: none;
   font-family: Helvetica;
   font-size: 16px;
   left: 20px;
-  min-width: 250px;
+  min-width: 220px;
   outline: 0;
   padding: 20px;
   position: absolute;
   top: 20px;
+
+  @media (min-width: 600px) {
+    min-width: 250px;
+  }
 }
 
 .loaded {
