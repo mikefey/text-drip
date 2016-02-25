@@ -19,16 +19,10 @@ System.config({
     "babel": "npm:babel-core@5.8.34",
     "babel-runtime": "npm:babel-runtime@5.8.34",
     "core-js": "npm:core-js@1.2.6",
-    "jsx": "github:floatdrop/plugin-jsx@1.1.0",
     "lodash": "npm:lodash@3.10.1",
     "opentype.js": "npm:opentype.js@0.6.0",
-    "react": "npm:react@0.14.3",
-    "react-dom": "npm:react-dom@0.14.3",
     "scss": "github:mobilexag/plugin-sass@0.2.0",
     "tween.js": "npm:tween.js@16.3.1",
-    "github:floatdrop/plugin-jsx@1.1.0": {
-      "react-tools": "npm:react-tools@0.13.3"
-    },
     "github:jspm/nodelibs-assert@0.1.0": {
       "assert": "npm:assert@1.3.0"
     },
@@ -314,6 +308,9 @@ System.config({
       "ua-parser-js": "npm:ua-parser-js@0.7.10",
       "whatwg-fetch": "npm:whatwg-fetch@0.9.0"
     },
+    "npm:fbjs@0.6.1": {
+      "process": "github:jspm/nodelibs-process@0.1.2"
+    },
     "npm:glob@5.0.15": {
       "assert": "github:jspm/nodelibs-assert@0.1.0",
       "events": "github:jspm/nodelibs-events@0.1.1",
@@ -448,20 +445,6 @@ System.config({
     "npm:randombytes@2.0.1": {
       "buffer": "github:jspm/nodelibs-buffer@0.1.0",
       "crypto": "github:jspm/nodelibs-crypto@0.1.0",
-      "process": "github:jspm/nodelibs-process@0.1.2"
-    },
-    "npm:react-dom@0.14.3": {
-      "react": "npm:react@0.14.3"
-    },
-    "npm:react-tools@0.13.3": {
-      "buffer": "github:jspm/nodelibs-buffer@0.1.0",
-      "commoner": "npm:commoner@0.10.4",
-      "jstransform": "npm:jstransform@10.1.0",
-      "process": "github:jspm/nodelibs-process@0.1.2"
-    },
-    "npm:react@0.14.3": {
-      "envify": "npm:envify@3.4.0",
-      "fbjs": "npm:fbjs@0.3.2",
       "process": "github:jspm/nodelibs-process@0.1.2"
     },
     "npm:readable-stream@1.1.13": {
