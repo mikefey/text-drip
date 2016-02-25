@@ -7,11 +7,11 @@
     <title>Text Experiments</title>
   </head>
   <body>
-    <script src="jspm_packages/system.js"></script>
-    <script src="config.js"></script>
-    <script>
-      System.import('assets/js/src/index.js');
-    </script>
+    <!-- build:js -->
+    <script src='jspm_packages/system.js'></script>
+    <script src='config.js'></script>
+    <script>System.import('assets/js/src/index.js');</script>
+    <!-- endbuild -->
     <div class='app-container'>
       <canvas class='font-render' width=500 height=300></canvas>
       <input type='text' placeholder='Type something and hit enter' class='text-input' />

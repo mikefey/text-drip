@@ -108,4 +108,14 @@ const app = {
   },
 };
 
-app.init();
+
+// if the DOM is ready by the time this module is loaded,
+// fire the init function, otherwise, listen for the window.onload event
+if (document.readyState === 'complete' ||
+  document.readyState === 'interactive') {
+  app.init();
+} else {
+  window.onload = function () {
+    app.init();
+  };
+}
